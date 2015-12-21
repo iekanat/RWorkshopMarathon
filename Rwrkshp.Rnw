@@ -1,0 +1,1286 @@
+\documentclass{beamer}
+%\usepackage{times}  % fonts are up to you
+\usepackage{graphicx}
+\usepackage{multirow, booktabs} % Tables
+\usepackage{wrapfig} % License page, wrap text around image.
+\usepackage[T1]{fontenc}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+\usepackage{url}
+\ifx\hypersetup\undefined
+  \AtBeginDocument{%
+    \hypersetup{unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
+ breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=false}
+  }
+\else
+  \hypersetup{unicode=true,pdfusetitle,
+ bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
+ breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=false}
+\fi
+
+% Get URLs to be colored
+\definecolor{links}{HTML}{990000}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
+
+\makeatletter
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% LyX specific LaTeX commands.
+\providecommand{\LyX}{\texorpdfstring%
+  {L\kern-.1667em\lower.25em\hbox{Y}\kern-.125emX\@}
+  {LyX}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Textclass specific LaTeX commands.
+ % this default might be overridden by plain title style
+ \newcommand\makebeamertitle{\frame{\maketitle}}%
+ % (ERT) argument for the TOC
+
+
+
+% have this if you'd like a recurring outline
+\AtBeginSection[]  % "Beamer, do the following at the start of every section"
+{
+\begin{frame}<beamer> 
+\frametitle{Outline} % make a frame titled "Outline"
+\tableofcontents[currentsection]  % show TOC and highlight current section
+\end{frame}
+}
+
+\AtBeginSubsection{\frame{\subsectionpage}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% User specified LaTeX commands.
+\mode<presentation>
+\usetheme{CambridgeUS} 
+\usecolortheme{beaver}
+\makeatother
+
+\begin{document}
+<<setup, include=FALSE>>=
+library(knitr)
+library(ggplot2)
+opts_chunk$set(fig.path='figures/beamer-',fig.align='center',fig.show='hold',size='scriptsize')
+opts_chunk$set(tidy=TRUE)
+rm(list=ls()) # Clean the workspace
+@
+
+\title[R Workshop]{How I Learned to Stop Worrying and Love the R Console}
+\subtitle{Marathon Edition}
+
+\author{Irfan E Kanat}
+
+\institute{Department of Information Systems\\ 
+W.P. Carey School of Business\\
+Arizona State University}
+
+\titlegraphic{\vfill \hfill \hyperlink{license}{\includegraphics{figures/cc.png}}}
+
+\date{\today}
+
+
+
+\makebeamertitle
+
+
+\section{Introduction}
+
+\begin{frame}
+\frametitle{Who am I?}
+
+Irfan Kanat, PhD Candidate
+
+\vspace*{2em} R user since 2006
+
+\vspace*{2em} Open Source Evangelist
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Before We Begin}
+{\Large
+Got R \& R Studio Installed? \vfill
+
+Get your workshop documents: \vfill
+
+\href{https://github.com/iekanat/RWorkshopMarathon}{https://github.com/iekanat/RWorkshopMarathon} \vfill
+
+}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{What is this about?}
+
+\begin{columns}[T]
+	\begin{column}{.5\textwidth}
+		A brief introduction to R.
+		\vspace*{10pt}
+		\begin{itemize}
+		\item R Console
+		\item Importing Data
+		\item Packages
+		\item Sample analyses
+		\item Where to get help?
+		\end{itemize}
+	\end{column}
+
+	\begin{column}{.5\textwidth}
+		\includegraphics[width=\textwidth]{./figures/R.png}
+	\end{column}
+\end{columns}	
+\end{frame}
+
+\begin{frame}
+\frametitle{What is R?}
+
+From R project web site:\vfill
+
+R is a language \emph{and} an environment for statistical computing and graphics. \vfill
+\begin{columns}[T]
+	\begin{column}{.5\textwidth}
+		\begin{itemize}
+		\vspace{.5em} \item Language %add additional functionality by defining new functions. Much of the system is itself written in the R
+		\vspace{.5em} \item Environment %The term “environment” is intended to characterize it as a fully planned and coherent system, rather than an incremental accretion of very specific and inflexible tools, as is frequently the case with other data analysis software.
+		\vspace{.5em} \item Statistics and Visualization %  We prefer to think of it of an environment within which statistical techniques are implemented. R can be extended (easily) via packages
+		\end{itemize}
+	\end{column}
+
+	\begin{column}{.5\textwidth}
+		\includegraphics[width=\textwidth]{./figures/R.png}
+	\end{column}
+\end{columns}	
+\vfill
+
+\end{frame}
+
+\begin{frame}
+\frametitle{What is R?}
+
+All this means R is very flexible, which played a huge role in its success.\vfill
+
+My take: Low cost, high quality, open source solution for your analysis needs.\vfill
+
+\end{frame}
+
+\begin{frame}
+\frametitle{When to Use R?}
+
+R is very strong for your classical machine learning and statistical analysis. Thousands of packages address almost all analysis needs. It is a logical first stop to start analysis.\vfill
+
+\pause 
+Yet it's core design is starting to show its age. There are certain down sides to traditional R:\vfill
+
+\begin{itemize}
+\item Everything is stored in memory\footnote{\onslide<2>{Except when it is not. There are packages to overcome these issues.}}
+\vspace{1em}
+
+\item R is single core\footnotemark[1]
+\end{itemize}
+\vfill
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Best Part of R}
+
+\textbf{Packages} CRAN houses over 7K packages. Providing functionality way beyond what is available in commercial packages.
+
+\vspace*{1.5em}\textbf{Community} Millions of users mean, all your questions are either already answered or will be in hours.
+
+\vspace*{1.5em}\textbf{Performance} While memory and core restrictions are real, for the cost of a single user license of a commercial package, you can buy better hardware to run R. Furthermore, with the packages providing multicore and flatfile functionality, R performance is on par or better than commercial packages
+
+\end{frame}
+
+
+\section{R Console}
+
+\begin{frame}
+\frametitle{Command Driven Interface}
+\begin{columns}[T]
+	\begin{column}{.5\textwidth}
+	    Command line may be intimidating\vspace{1em}
+
+		Power over Convenience\vspace{1em}
+	    
+	    Consider the number of
+	    \begin{itemize}
+		    \item Functions
+		    \item Parameters
+		    \item Data sources
+		    \item Variables
+		    \item Replications
+	    \end{itemize}
+	\end{column}
+
+	\begin{column}{.5\textwidth}
+		\onslide<2>{
+		\includegraphics[width=\textwidth]{./figures/GUIoverload.png}
+		}
+	\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{R Studio}
+
+	\includegraphics[width=\textwidth]{./figures/studio.png}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{New Project}
+\vfill
+File > New Project
+\vfill
+Empty Directory > Empty Project > Directory Name: Workshop
+\vfill
+\end{frame}
+
+
+\begin{frame}[fragile, allowframebreaks]
+\frametitle{R as a Calculator}
+
+<<>>=
+# Arithmetics
+2+2
+
+2*3
+
+2^3
+
+log(100, 10)
+@
+
+<<>>=
+# Logic
+1 == 2
+
+1 != 2
+
+2 < 3
+@
+
+\end{frame}
+
+\begin{frame}[fragile, allowframebreaks]
+\frametitle{Variables}
+
+<<>>=
+A <- 2
+
+A
+
+a # Case sensitive
+
+'A' != 'a' # Explanation
+
+B <- 7
+
+A + B
+@
+
+<<>>=
+C <- c(1,3,7,9) # A list can be in a variable
+
+C
+
+C + A
+
+C * A
+
+C < 5
+@
+
+\end{frame}
+
+
+
+\begin{frame}[fragile, allowframebreaks]
+\frametitle{Indexes and Data Frames}
+
+<<>>=
+1:30
+
+C[3]
+
+C[c(2,3)]
+
+C[1:3]
+@
+
+<<tidy=FALSE>>=
+Countries <- data.frame(names=c("US","TR","DE"), supply=c(10, 8, 7), 
+			those=c(TRUE, FALSE, FALSE))
+
+Countries
+@
+
+<<>>=
+Countries[2,]
+
+Countries[,3]
+
+Countries[2,3]
+
+Countries[1:2,]
+@
+
+<<>>=
+Countries[ ,"names"]
+
+Countries$names
+
+Countries$those
+@
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Loops in R}
+{\Huge {\color{red} CAUTION!}}
+\vfill
+R is notoriously inefficient with your classic loops
+\vfill
+
+\begin{itemize}
+	\item Structure of the Data Frame
+	\item Memory Management
+\end{itemize}
+\vfill
+Try to use an apply function instead. 
+\vfill
+Vectorize your operations.
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{For Loop in R}
+<<>>=
+for (i in 1:3) print(i)
+
+# Iterating through a data frame
+for (i in 1:nrow(Countries)) {
+	print(Countries[i,])
+}
+@
+
+\end{frame}
+
+
+\begin{frame}[fragile, allowframebreaks]
+\frametitle{Functions}
+
+	<<echo=FALSE, results='hide'>>= 
+		admitData <- read.csv("http://www.ats.ucla.edu/stat/data/binary.csv")
+		admitData$rank <- as.factor(admitData$rank)
+	@
+
+<<>>=
+mean(C) # Takes parameters
+
+mean(C, trim=.1, na.rm=T) # Takes multiple parameters
+
+log( sum(C)/length(C) ) # Can be combined
+@
+
+<<>>=
+HelloWorld<-function(x, y=1) {
+	for(i in 1:y) {
+		print(paste('Hello', x))
+	}
+}
+
+HelloWorld('Online MSBA')
+
+HelloWorld('Online MSBA', 2)
+@
+
+<<>>=
+HelloWorld # Review the source code
+ls
+@
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]
+\frametitle{Commonly Used Functions}
+<<>>=
+ls() # Get a list of objects in the workspace
+
+ls(pattern='*_0') # partial match on object search
+
+rm('svm_0') # Remove an object from the workspace
+
+#rm(list=ls(pattern=ls())) # This would remove everything if ran
+@
+
+
+<<>>=
+mean(A) # Mean
+
+sd(admitData[,'gre']) # Standard Deviation
+
+#AIC()
+@
+
+
+
+<<>>=
+str(Countries) # Look at the structure of objects
+
+summary(Countries) # Get summary of data
+@
+
+<<include=FALSE>>=
+logit_1 <- glm(admit~gre, admitData, family = "binomial") 
+@
+
+<<size='tiny'>>=
+summary(logit_1) # Get summary of model
+@
+
+<<fig.align='center',out.width='.6\\linewidth'>>=
+cor(admitData[,1:3]) # Get correlation matrix
+@
+
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Questions}
+	\begin{center}
+		\vfill
+			\resizebox{!}{.75\textheight}{\Huge \color{red} ?}
+		\vfill
+	\end{center}
+\end{frame}
+
+
+\section{Importing Data}
+
+\begin{frame}
+\frametitle{Importing Data}
+
+R allows importing data from a wide variety of sources. \vspace{1em}
+
+\begin{itemize}
+\item Comma Separated Values (CSV)
+\item Databases
+\item Flat files
+\item Lesser statistical packages
+\item and more
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{Importing CSV Files}
+
+CSV has certain advantages that make it popular.
+
+\begin{columns}[T]
+	\begin{column}{.5\textwidth}
+		\begin{itemize}
+		\vspace{1.5em}
+		\item Compatibility
+		\item Flexibility
+		\item Simplicity
+		\end{itemize}
+	\end{column}
+	\begin{column}{.5\textwidth}
+		\begin{alertblock}{Sample}
+		{\scriptsize
+		"iso2", "Supply", "Those" \\
+		"AU",         20,       0 \\
+		"TR",         80,       1 \\
+		"US",        100,       0 \\
+		"GB",         50,       0 \\
+		"DE",         70,       0 \\
+		}
+		\end{alertblock}
+	\end{column}
+\end{columns}
+
+\vspace{1em}
+We use read.csv() or read.csv2() commands to import the csv files.
+
+	<<eval=FALSE>>=
+		saveData <- read.csv("PathToCSV", header=TRUE, sep="," 
+		                     , quote="\"")
+	@
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Working with Excel Files}
+
+Much like CSV, except it lacks the simplicity, flexibility, and compatibility of CSV.
+
+<<eval=FALSE>>=
+# Load the necessary library
+library(xlsx)
+# Read in the data from excel file
+xlsx <- read.xlsx("country.xlsx", sheetIndex = 1)
+@
+
+\end{frame}
+
+
+\begin{frame}[c]
+\frametitle{Working with Databases}
+
+\begin{columns}[T]
+	\begin{column}{.5\textwidth}
+		No speed advantage.\vspace{1em}
+
+		Data larger than memory.\vspace{1em}
+
+		Working with databases:
+		\begin{itemize}
+			\item Work in the database.
+			\item Import data from database.
+		\end{itemize}
+		\vfill
+	\end{column}
+
+	\begin{column}{.5\textwidth}
+		\includegraphics[width=.8\textwidth]{./figures/Database.png}
+	\end{column}
+
+\end{columns}
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Working with Databases}
+
+	<<eval=FALSE>>=
+	# Load the necessary library
+	library(RMySQL) 
+	# Establish connection to the database.
+	channel <- dbConnect(MySQL(), user = 'uname', password = 'pwd', 
+                     host = '127.0.01', dbname='exampledata')
+	# Send query and save results in R workspace
+    sql <- dbGetQuery(channel, "SELECT * FROM table;") 
+	@
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Lesser Statistical Packages :P}
+\begin{columns}[T]
+	\begin{column}{.5\textwidth}
+		\vspace{1em}
+		Foreign Package\vspace{1em}
+
+		Newer file formats\vspace{1em}
+		\begin{itemize}
+			\item sas7bdat
+			\item readstata13
+		\end{itemize}
+	\end{column}
+	\begin{column}{.5\textwidth}
+		\includegraphics[width=.8\textwidth]{./figures/lesser.png}
+	\end{column}
+\end{columns}
+
+
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Questions}
+	\begin{center}
+		\vfill
+			\resizebox{!}{.75\textheight}{\color{red} ?}
+		\vfill
+	\end{center}
+\end{frame}
+
+
+\section{Packages}
+
+\begin{frame}
+\frametitle{Packages: Source of R's Power}
+
+\begin{columns}[c]
+	\begin{column}{.5\textwidth}
+		Encountered already \vspace{1em}
+
+		Make R extendible \vspace{1em}
+
+		Like libraries \vspace{1em}
+
+		Collection of:
+		\begin{itemize}
+			\item functions
+			\item documentation
+			\item data files
+		\end{itemize}
+
+	\end{column}
+	\begin{column}{.5\textwidth}
+		\includegraphics[width=\textwidth]{figures/packages.png}
+	\end{column}
+\end{columns}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Gifts from the Community}
+
+\begin{columns}[c]
+	\begin{column}{.5\textwidth}
+		Currently over 7000 packages \vspace{1em}
+
+		for
+		\begin{itemize}
+			\item Statistical Modeling
+			\item Machine Learning
+			\item Data Manipulation
+			\item Visualization
+			\item \ldots
+		\end{itemize}
+
+		from
+		\begin{itemize}
+			\item Economics
+			\item Computer Science
+			\item Statistics
+			\item Medicine
+			\item \ldots
+		\end{itemize}
+
+	\end{column}
+	\begin{column}{.5\textwidth}
+		\includegraphics[width=\textwidth]{figures/packages.png}
+	\end{column}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Great but Where are My Gifts?}
+\vfill
+
+{\Huge Comprehensive R Archive Network (CRAN)}
+
+\vfill
+
+A Group of FTP and HTML servers hosting R packages.
+
+\vfill
+
+R has built in package management facilities.
+
+\vfill
+
+Most of these can be achieved through the R Studio GUI. (Area D, packages pane)
+
+\vfill
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{Package Management}
+
+<<eval=FALSE, messages=-5>>=
+# Installing a package
+install.packages("e1071")  # Notice the quotes around package name
+# Loading package into memory
+library(e1071) # Notice the lack of quotes
+# Unload package
+detach("package:e1071", unload=TRUE) # Notice the package: prepended
+
+# Get the list of packages loaded
+(.packages())
+# Get list of all installed packages (output omitted)
+.packages(all.available = T)
+@
+\end{frame}
+
+
+\begin{frame}[fragile]
+\frametitle{How to Find Packages}
+
+If you want to search a certain word in installed packages' documentation, you can always use ?? or help.search()
+
+<<eval=FALSE, tidy=FALSE>>=
+??mixed
+help.search("mixed model")
+@
+
+Internet searches are a bit problematic as R can be a bit ambiguous until Google learns you are interested in the statistical computing environment.
+\vfill
+
+\href{https://cran.r-project.org/web/packages/}{Comprehensive R Archive Network (CRAN)}
+\vfill
+
+\href{https://r-forge.r-project.org/}{R Forge}
+\vfill
+
+\href{http://search.r-project.org}{R site search} also available with command RSiteSearch()
+\vfill
+\href{http://rseek.org/}{R seek}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Commonly Used Packages: Data Manipulation}
+
+\textbf{data.tables} Replaces traditional data.frame. 
+\begin{itemize}
+	\item Faster access/write
+	\item Improved selection 
+	\item Improved subsetting 
+	\item Improved aggregation 
+\end{itemize}
+
+Not a drop-in replacement as it breaks compatibility in some cases.
+
+\vspace{1em}
+
+\textbf{ddplyr}
+
+Additional functionality for:
+\begin{itemize}
+	\item selection
+	\item filtering
+	\item aggregation
+\end{itemize}
+
+Provides efficient back-end data structures to speed things up. 
+
+Works with databases as well.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{Commonly Used Packages: Statistics}
+
+Multiple Regression: Stats package, lm() (loaded by default) \vfill
+
+Generalized Linear Models: Stats package, glm() \vfill
+
+Traditional Econometric Models: plm package \vfill
+
+Mixed Modeling: nlme and lme4 packages \vfill
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Commonly Used Packages: Machine Learning}
+
+Most probably all you need is caret package. \vfill
+
+Caret package is a wrapper for a host of classification and regression model training functions. It eases visualizations, data manipulation, and analytics among others. \href{http://topepo.github.io/caret/modelList.html}{It currently supports over 150 types of models.}\vfill 
+
+If you insist on using individual packages:
+
+Classifiers: class package 
+
+Support Vector Machines: kernlab, e1071 packages 
+
+Clustering: Base package (kmeans(), hclust()), mclust package 
+
+Neural Networks: neuralnet package.
+\vfill
+
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Questions}
+	\begin{center}
+		\vfill
+			\resizebox{!}{.75\textheight}{\Huge \color{red} ?}
+		\vfill
+	\end{center}
+\end{frame}
+
+\section{Sample Analysis and Visualizations}
+
+
+\subsection{Descriptive Visualizations}
+
+\begin{frame}
+\frametitle{Motor Trends Dataset}
+
+\href{http://www.jstor.org/stable/2530428}{We will use 1974 Motor Trend dataset. It has 32 observations and 11 variables.} \vfill
+
+\begin{columns}[T]
+	\begin{column}{.5\textwidth}
+		\begin{itemize}
+			\item mpg: Miles per gallon
+			\item cyl: Number of cylinders
+			\item disp: Displacement
+			\item hp: Horse Power
+			\item drat: Rear axle ratio
+			\item wt: Weight
+		\end{itemize}
+	\end{column}
+
+	\begin{column}{.5\textwidth}
+		\begin{itemize}
+			\item qsec: quarter mile time
+			\item vs: V - S 
+			\item am: 0 automatic, 1 manual
+			\item gear: Gears
+			\item carb: Number of carburetors
+		\end{itemize}
+	\end{column}
+\end{columns}
+\vfill
+
+\end{frame}
+
+
+\begin{frame}[fragile,allowframebreaks]
+\frametitle{Motor Trends Dataset}
+
+<<size='tiny'>>=
+summary(mtcars)
+@
+
+<<mtcarspairs,fig.width=4,fig.height=4,out.width='.54\\linewidth', size='tiny'>>=
+pairs(mtcars[,c('mpg', 'hp', 'am',  'cyl')]) # Visualize Correlations
+@
+\end{frame}
+
+
+\begin{frame}[fragile, allowframebreaks]
+\frametitle{Histograms}
+
+<<'bar0',fig.width=6,fig.height=3,out.width='.7\\linewidth'>>=
+data(mtcars) # Load the Dataset
+library(ggplot2) # Load the ggplot package
+# Nr of cars by number of gears
+qplot(factor(gear), data=mtcars, geom="bar")
+@
+
+<<'bar1',fig.width=6,fig.height=4,out.width='.7\\linewidth', tidy=FALSE>>=
+# If we are interested in a third categorical variable vs:
+qplot(factor(gear), data=mtcars, geom="bar", fill=factor(am)) + 
+ggtitle('Nice Histogram') # This is how you add a title
+@
+\end{frame}
+
+\begin{frame}[fragile, allowframebreaks]
+\frametitle{Scatter Plots}
+
+<<'scatter0', fig.width=6, fig.height=4, out.width='.7\\linewidth'>>=
+# Two continuous variables
+qplot(hp, mpg, data=mtcars, color=factor(cyl))
+@
+
+<<'scatter1', fig.width=6, fig.height=4, out.width='.7\\linewidth'>>=
+# Add two more variables represented by color and size of points
+qplot(hp, mpg, data=mtcars, color=factor(cyl), size=disp, alpha=.09)
+@
+
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]
+\frametitle{Bar Charts}
+
+<<'bar2', fig.width=6, fig.height=4, out.width='.7\\linewidth'>>=
+ggplot(mtcars,aes(x=factor(gear),y=mpg,fill=factor(vs)), color=factor(vs)) +  
+  stat_summary(fun.y=mean, position=position_dodge(), geom="bar")
+@
+
+\end{frame}
+
+
+% Linear Regression
+\subsection{Modeling}
+
+\begin{frame}
+\frametitle{Modeling}
+
+Developing a mathematical explanation for real life phenomena.\vfill
+
+Useful in predicting outcomes (Y), and/or explaining the role of drivers (X).\vfill
+
+Y = Outcome Variable, Dependent Variable\ldots\vfill
+
+X = Predictor, Independent variable\ldots\vfill
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Formula Interface}
+
+Pay close attention to how we specify the model. \vfill
+
+\begin{alertblock}{R Model}
+		Y $\sim x_1 + x_2$
+\end{alertblock}
+\vfill
+
+This basic structure will remain constant across many R packages.\vfill 
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Nifty Tricks with Formula Interface}
+
+If you have lots of variables use the shortcut `.'.
+
+\hspace{4em} mpg $\sim$ . \vfill
+
+You can do transformations on the fly, no need to create variables.
+
+\hspace{4em} log(mpg + 1) $\sim$ .\vfill
+
+Dummy variables.
+
+\hspace{4em} log(mpg + 1) $\sim$ factor(gears) \vfill
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Regression}
+
+Y is continuous.\vfill
+
+Prediction.\vfill
+
+Explanation.\vfill
+
+Linearity, Homoscedasticity, Normality, No Multicollinearity
+
+\end{frame}
+
+\begin{frame}[fragile,allowframebreaks]
+\frametitle{Regression}
+
+Regression visualized.
+
+<<'reg1', fig.width=6, fig.height=3.5, out.width='.6\\linewidth'>>=
+ggplot(mtcars, aes(x=hp, y=mpg)) +
+  geom_point() +
+	# Add a regression line
+	geom_smooth(method=lm)
+@
+
+
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{Multiple Regression Example}
+
+We will keep using motor trends data set.\vfill
+
+\begin{alertblock}{Formula}
+	\[
+		Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon
+	\]
+\end{alertblock}
+\vfill
+\begin{alertblock}{R Model}
+    \[
+		Y \sim x_1 + x_2
+	\]
+\end{alertblock}
+\vfill
+
+
+\end{frame}
+
+
+\begin{frame}[fragile,allowframebreaks]
+\frametitle{Regression}
+
+
+<<size='tiny'>>=
+# Let us estimate gas milage
+reg_0 <- lm( mpg ~ hp + cyl + am, mtcars)
+summary(reg_0)
+@
+
+<<size='tiny'>>=
+## Diagnostics
+
+# Multicollienarity (vif>10 indicates MC)
+vif(reg_0)
+
+# Normality (p<0.05 indicates NN)
+shapiro.test(reg_0$residuals)
+
+# Homoscedasticity (p<0.05 indicates Heteroscedasticity)
+ncvTest(reg_0)
+@
+
+<<>>=
+# Access Fitted Values
+# View first 3 predictions
+reg_0$fitted.values[1:3]
+@
+
+<<>>=
+# PREDICTING NEW DATA BASED ON MODEL
+newCar <- mtcars[3,] # 3rd observation is Datsun 710
+newCar$am <- 0 # What if it was automatic?
+reg_0$fitted.values[3] # Previous estimate
+predict(reg_0, newdata = newCar) # Datsun with automatic transmission
+@ 
+
+<<regplot, tidy=F, fig.width=6,fig.height=4,out.width='.7\\linewidth'>>=
+## Plot the residuals against observation
+qplot(data=mtcars, x = mpg, y = reg_0$residuals) + #$
+	stat_smooth(method = "lm", col = "red") 
+@
+
+<<>>=
+## COMPARE MODELS
+reg_1 <- lm( mpg ~ hp + cyl + am + wt, mtcars) # add weight
+anova(reg_0, reg_1)
+# AIC of the model
+AIC(reg_0)
+AIC(reg_1)
+# Also the R-square
+@
+
+\end{frame}
+
+
+
+% Logistic Regression
+\begin{frame}
+\frametitle{Logistic Regression}
+
+Ordinary least squares regression was great for predicting continuous variables.\vfill
+
+What if we are interested in predicting categories?\vfill
+
+If there are only two categories (binary) logistic regression is a viable alternative.\vfill
+
+Idea is similar to OLS regression. The only difference is we predict a constrained outcome (probability).
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Logistic Regression}
+
+Dependent variable will be type (binary). \vfill
+
+It is basically a regression with a binomial link function. \vfill
+
+\begin{alertblock}{Formula}
+\[
+log \left(\frac{p}{1-p} \right) = \beta_0 + \beta_1 x_1 + \epsilon
+\]
+\end{alertblock}
+
+\end{frame}
+
+
+\begin{frame}[fragile,allowframebreaks]
+\frametitle{Logit}
+
+
+<<size='tiny'>>=
+logit_2 <- glm(am ~ mpg + drat + cyl, data = mtcars, family='binomial')
+summary(logit_2)
+@
+
+<<logitplot2,fig.width=6,fig.height=4,out.width='.7\\linewidth', warnings=FALSE, tidy=FALSE>>=
+# VISUALIZE mpg - Transmission RELATION
+ggplot(mtcars, aes(x = mpg, y = am)) +  
+  	stat_smooth(method="glm", family="binomial", se=FALSE) #
+@
+
+
+<<logitplot3,fig.width=6,fig.height=4,out.width='.9\\linewidth'>>=
+## VISUALIZE Mpg - Transmission
+## FOR DIFFERENT NUMBERS OF CYLINDERS
+
+# Create a new dataset with varying number of cylinders and other variables fixed at mean levels.
+mtcars2<-data.frame(mpg = rep(10:30, 3),drat = mean(mtcars$drat), disp = mean(mtcars$disp), cyl = rep(c(4,6,8),21))
+# Predict probability of new data
+mtcars2$prob<-predict(logit_2, newdata=mtcars2, type = "response")
+
+# Plot the results
+ggplot(mtcars2, aes(x=mpg, y=prob)) +
+  geom_line(aes(colour = factor(cyl)), size = 1) # a different color for each category$
+@
+
+<<>>=
+## DIAGNOSTICS
+
+# Let us compare predicted values to real values
+mtcars$prob <- predict(logit_2, type="response")
+# Prevalence of Manual Transmission
+mean(mtcars$am)
+
+# Create predict variable
+mtcars$pred <- 0
+# If probability is greater than .6 (1-prevalence), set prediction to 1
+mtcars[mtcars$prob>.6, 'pred'] <- 1
+@
+
+<<logitroc,fig.width=4,fig.height=4,out.width='.5\\linewidth', messages=-1>>=
+## ROC CURVE
+
+# Load the necessary library
+library(pROC)
+# Calculate the ROC curve using the predicted probability vs actual values
+logit_2_roc <- roc(am~prob, mtcars) 
+# Plot ROC curve
+plot(logit_2_roc)
+@
+
+<<size='tiny'>>=
+library(caret) # Needed for Confusion Matrix
+confusionMatrix(table(mtcars[,c("am", "pred")]))
+@
+
+\end{frame}
+
+
+
+\begin{frame}
+	\frametitle{Questions}
+	\begin{center}
+		\vfill
+			\resizebox{!}{.75\textheight}{\Huge \color{red} ?}
+		\vfill
+	\end{center}
+\end{frame}
+
+\section{Reporting}
+
+\begin{frame}
+\frametitle{Markdown and R Markdown}
+
+Think HTML simplified. \vfill
+
+Add (R) code into it. \vfill
+
+Stir well with knitr \vfill
+
+\end{frame}
+
+\begin{frame}[fragile]
+\frametitle{R Markdown Cheat Sheet}
+
+\#   {\Huge \textbf{H1}}
+
+\#\#  {\Large \textbf{H2}}
+
+\#\#\# \textbf{H3} \vfill
+
+*{\textit{Italic}}*
+
+**{\textbf{Bold}}**
+
+***{\textit{ \textbf{Bold Italic}}}*** \vfill
+
+\begin{verbatim}
+``` { r, options }
+R CODE HERE
+```
+\end{verbatim}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Professional Looking Documents}
+
+All the documentation of this workshop has been prepared in R Studio. \vfill
+
+Look into the Rmd documents to see how this was done. \vfill
+
+summary() function does not provide the best looking model summaries.
+Try the texreg package (do as I say, not as I do).\vfill
+
+Use themes for your plots.
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Other Reporting Alternatives}
+
+Sweave: \LaTeX \vfill
+
+Beamer: \LaTeX ~ presentations \vfill
+
+Shiny: Web Applications \vfill
+
+\end{frame}
+
+
+\begin{frame}
+	\frametitle{Questions}
+	\begin{center}
+		\vfill
+			\resizebox{!}{.75\textheight}{\Huge \color{red} ?}
+		\vfill
+	\end{center}
+\end{frame}
+
+
+\section{Where to Go Next?}
+
+\begin{frame}
+\frametitle{Quo Vadis?}
+
+4 hours is not enough! \vfill
+
+RTFM\footnote{Read the Friendly Manual}: Documentation is your friend, read the vignettes and manuals.\vfill
+
+For tutorials: \href{http://www.ats.ucla.edu/stat/r/}{Institute For Digital Research and Education, UCLA} \vfill
+
+For questions: StackExchange\footnote{Word of caution, \href{http://stackoverflow.com/help/how-to-ask}{pay attention to how you ask your questions}. It is more important than you realize!}
+\begin{itemize}
+\item \href{http://stats.stackexchange.com/}{Cross Validated specializes on Statistics}
+\item \href{http://stackoverflow.com/}{Stack Overflow for R programming}
+\end{itemize}
+\vfill
+
+R Programming is quirky, learn about efficient R programming.
+
+\end{frame}
+
+\begin{frame}
+	\frametitle{Questions}
+	\begin{center}
+		\vfill
+			\resizebox{!}{.75\textheight}{\Huge \color{red} ?}
+		\vfill
+	\end{center}
+\end{frame}
+
+\begin{frame}[label=license]
+    \frametitle{License}
+
+\begin{wrapfigure}{l}{0.25\textwidth} %this figure will be at the right
+    \centering
+    \includegraphics[width=0.25\textwidth]{figures/CCBig.png}
+\end{wrapfigure}
+
+How I Learned to Stop Worrying and Love the R Console by \href{http://irfankanat.com}{Irfan E Kanat} is licensed under a \href{http://creativecommons.org/licenses/by/4.0/}{Creative Commons Attribution 4.0 International License}. Based on a work at \href{http://github.com/iekanat/rworkshop}{http://github.com/iekanat/rworkshop}.
+
+
+\end{frame}
+
+\end{document}

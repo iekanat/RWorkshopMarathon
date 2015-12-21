@@ -1,0 +1,301 @@
+---
+title: "Sample Analysis and Visualizations"
+author: "Irfan Kanat"
+date: "12/20/2015"
+output: 
+  pdf_document:
+    fig_width: 4
+    fig_height: 3
+    fig_caption: false
+---
+
+
+## Introducing the Dataset
+
+[In this document we will analyze the Motor Trends data.](http://www.jstor.org/stable/2530428) The dataset was compiled from 1974 issues of Motor Trends magazine and is included with R Base package.
+  
+Let us start with loading the dataset.
+  
+```{r}
+data(mtcars)
+```
+
+As we learned in the section on packages, you can querry the documentation for almost anything. Including the datasets included in packages. The document includes descriptions of the variables.
+
+```{r}
+?mtcars
+```
+
+Let us get a sense of the data.
+
+```{r}
+# A summary of variables
+summary(mtcars)
+# Correlation table for first 4 variables (due to space concerns)
+cor(mtcars[,1:4])
+# bivariate comparisons of categorical variables
+table(mtcars[,c("am","cyl")])
+
+# The histogram below should reflect these figures. 
+table(mtcars$gear)
+```
+
+## Plotting with qplot()
+
+R has long been known for its extensive visualization capabilities. The number of packages that handle visualizations are many, yet ggplot2 shines among them all. Today I will focus on ggplot2 and discuss plotting histograms and scatter plots with qplot. I will focus mostly on qplot() function, and discuss ggplot structure only briefly.
+
+Now we can get to the fun part. qplot simplifies the ggplot functionality by automating most common tasks. We will use qplot for most common plots. 
+
+```{r}
+# Load the ggplot package
+library(ggplot2)
+# Review function syntax
+?qplot
+```
+
+### Histogram
+
+You would use a histogram when you are interested in frequencies of certain categories, like number of people with different eye colors. Note that we specify a single variable.
+
+```{r}
+# Let us report the number of cars with differing number of front gears
+qplot(factor(gear), data=mtcars, geom="bar") # used factor to declare categorical
+```
+
+If we want to get fancy and want to report across two categorical variables we can color the bars based on another variable.
+
+```{r}
+qplot(factor(gear), data=mtcars,  fill=factor(am), geom="bar") # used factor to declare categorical
+```
+
+### Scatter Plots
+
+If you are interested in the relationship between two continuous variables, you can use scatter plots. 
+
+```{r}
+qplot(hp, mpg, data=mtcars)
+```
+
+Let us impose an additional factor into the plot. Let us color the dots by the number of cylinders.
+
+```{r}
+qplot(hp, mpg, data=mtcars, color=factor(cyl), alpha=.5)
+```
+
+Size of dots dependent on a continuous variable (displacement).
+
+```{r}
+qplot(hp, mpg, data=mtcars, color=factor(cyl), size=disp, alpha=.08)
+```
+
+Let us fit a regression line. This is where things start to get a bit ggplotty.
+
+```{r}
+qplot(hp, mpg, data=mtcars) + 
+  geom_smooth(method=lm, sd=F)
+```
+
+## ggplot
+
+qplot provides a convenient command for plotting. While qplot would address 90% of your plotting needs. ggplot is way more than qplot, it is almost a different language just for plotting. The intricacies may be hard to learn and is clearly beyond the scope of this workshop. I am providing ggplot code below to achieve the same results as the qplot, so the attendees can get a sense of what ggplot is really about.
+
+### Histogram
+
+```{r}
+# Initialize the plot with variables of interest
+ggplot(mtcars, aes(factor(gear))) +  
+# Instruct ggplot to plot bars of width .3
+  geom_bar(stat = "bin", width=0.3) +
+  ggtitle('GGPlot is Highly Customizable') +
+  xlab('Forward Gears') +
+  ylab('Nr of Cars') 
+```
+
+### Scatter Plot
+
+```{r}
+ggplot(mtcars, aes(x=hp, y=mpg)) +  
+  geom_point(aes(color=factor(cyl), size=disp)) + # For scatter plot
+	geom_smooth(method=lm) + # Add a regression line
+  ggtitle('GGPlot FTW!') # Add a title
+```
+
+### Bar Charts 
+
+You use bar charts when you want to visualize the relationship of a continuous variable over a categorical variable (eg. gender-height). Here I plot mean mpg over two categorical variables. 
+
+```{r}
+ggplot(mtcars,aes(x=factor(gear),y=mpg,fill=factor(vs)), color=factor(vs)) +  
+  stat_summary(fun.y=mean, position=position_dodge(), geom="bar") +
+  theme_classic() # BONUS: Nicer looking
+```
+
+
+## Statistical Models
+
+In this section, I will try to provide an introduction to using two simple statistical models in R: regression and logistic regression.
+
+### Regression
+
+If your dependent variable is continuous you can simply use regression. Regression is a good option if you are interested in explaining the role of each factor in determining the outcome. What regression does can be explained as fitting a line  that best explains the data.
+
+```{r}
+ggplot(mtcars, aes(x=hp, y=mpg)) +  
+  geom_point() + # For scatter plot
+	geom_smooth(method=lm) 
+ 
+```
+
+The line in the scatter plot shows you the relationship between horse power and miles per galon. As you can see each additional unit of horse power reduces the mpg by an amount equal to the slope of the regression line.
+
+For this demonstration, I will use the same Motor Trends dataset I used in Visualization section. 
+
+```{r}
+data(mtcars) # Get the data
+?mtcars # Help on dataset
+```
+
+We will use lm() function to fit regular regression.
+
+```{r}
+?lm
+```
+
+Below I declare a model where I use horse power, cylinders, and transmission type to estimate gas milage. Pay attention to model specification:
+
+```
+mpg ~ hp + cyl + am
+```
+
+Here the left hand side of the tilde is the dependent variable. and the right hand side has all the predictors we use separated by plus signs.
+
+```{r}
+# Fit 
+reg_0 <- lm( mpg ~ hp + cyl + am, data = mtcars) 
+summary(reg_0)
+```
+
+Look at the R-squared value to see how much variance is explained by the model, the more the better.
+
+You can access estimated values as follows. I used a head function to limit the output.
+
+```{r}
+head(reg_0$fitted.values)
+```
+
+You can use the fitted model to predict new datasets. Here I am modifying Datsun710 to see how the gas milage may have been influenced if the car was automatic instead of manual transmission.
+
+```{r}
+newCar <- mtcars[3,] # 3rd observation is Datsun 710
+newCar$am <- 0 # What if it was automatic?
+predict(reg_0, newdata = newCar) # Estimate went down by 4 miles
+```
+
+One way to see how your model did is to plot residuals. Ideally the residuals should be close to 0 and randomly distributed. If you see a pattern, it indicates misspecification.
+
+```{r}
+library(ggplot2)
+# Plot the fitted values against real values
+qplot(data=mtcars, x = mpg, y = reg_0$residuals) +
+  stat_smooth(method = "lm", col = "red")
+```
+
+```{r}
+## Diagnostics
+
+# Normality (p<0.05 indicates NN)
+shapiro.test(reg_0$residuals)
+
+# Multicollienarity (vif>10 indicates MC)
+library(car)
+vif(reg_0)
+
+# Homoscedasticity (p<0.05 indicates Heteroscedasticity)
+ncvTest(reg_0)
+```
+
+Comparing models. If you are using the same dataset, and just adding or removing variables to a model. You can compare models with a likelihood ratio test or an F test. Anova facilitates comparison of simple regression models.
+
+```{r}
+# Add variable wt
+reg_1 <- lm( mpg ~ hp + cyl + am + wt, mtcars)
+
+# Aikikae Information Criteria
+# AIC lower the better
+AIC(reg_0)
+AIC(reg_1)
+
+# Compare
+anova(reg_0, reg_1) # models are significantly different
+```
+
+### Logistic Regression
+
+Let us change gears and try to predict a binary variable. For this purpose we will use the logistic regression with a binomial link function. The model estimates the probability of Y=1. Using a linear regression model is inadvisable as the probability is constrained between 0 and 1. Thus we use a link function to transform regression to be limited between 0 and 1.
+
+Let us stick to the mtcars dataset and try to figure out if a car is automatic or manual based on predictors.
+
+We will use glm function.
+
+```{r}
+?glm
+```
+
+Let us fit the model
+
+```{r}
+logit_2 <- glm(am ~ mpg + drat + cyl, data = mtcars, family='binomial')
+summary(logit_2)
+```
+
+Visualize the results.
+
+```{r}
+ggplot(mtcars, aes(x = mpg, y = am)) + 
+    stat_smooth(method="glm", family="binomial", se=FALSE)+
+# Bonus: rename the y axis label
+		ylab('Probability of Manual Transmission')
+```
+
+How about plotting results for number of cylinders? We will need to process the data a little bit.
+
+```{r}
+# Create a new dataset with varying number of cylinders and other variables fixed at mean levels.
+mtcars2<-data.frame(mpg = rep(10:30, 3),drat = mean(mtcars$drat), disp = mean(mtcars$disp), cyl = rep(c(4,6,8),21))
+# Predict probability of new data
+mtcars2$prob<-predict(logit_2, newdata=mtcars2, type = "response")
+
+# Plot the results
+ggplot(mtcars2, aes(x=mpg, y=prob)) +
+  geom_line(aes(colour = factor(cyl)), size = 1) 
+```
+
+Diagnostics with logistic regression.
+
+```{r}
+
+# Let us compare predicted values to real values
+mtcars$prob <- predict(logit_2, type="response")
+# Prevalence of Manual Transmission
+mean(mtcars$am)
+
+# Create predict variable
+mtcars$pred <- 0
+# If probability is greater than .6 (1-prevalence), set prediction to 1
+mtcars[mtcars$prob>.6, 'pred'] <- 1
+
+# Predictions versus reality
+table(mtcars[,c("am", "pred")])
+
+## ROC CURVE
+# Load the necessary library
+library(pROC)
+# Calculate the ROC curve using the predicted probability vs actual values
+logit_2_roc <- roc(am~prob, mtcars) 
+# Plot ROC curve
+plot(logit_2_roc)
+```
+
+------
+
+![Creative Commons 4](figures/cc.png) How I Learned to Stop Worrying and Love the R Console by [Irfan E Kanat](http://irfankanat.com) is licensed under a [Creative Commons Attribution 4.0 International License](http://creativecommons.org/licenses/by/4.0/). Based on a work at [http://github.com/iekanat/rworkshop](http://github.com/iekanat/rworkshop).
