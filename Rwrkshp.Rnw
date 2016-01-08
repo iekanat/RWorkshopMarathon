@@ -1016,7 +1016,7 @@ summary(reg_0)
 
 <<size='tiny'>>=
 ## Diagnostics
-
+library(car)
 # Multicollienarity (vif>10 indicates MC)
 vif(reg_0)
 
