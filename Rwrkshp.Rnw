@@ -69,9 +69,9 @@ rm(list=ls()) # Clean the workspace
 \title[R Workshop]{How I Learned to Stop Worrying and Love the R Console}
 \subtitle{Marathon Edition}
 
-\author{Irfan E Kanat}
+\author[Irfan Kanat]{Irfan E Kanat}
 
-\institute{Department of Information Systems\\ 
+\institute[ASU]{Department of Information Systems\\ 
 W.P. Carey School of Business\\
 Arizona State University}
 
