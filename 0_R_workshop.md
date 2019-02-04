@@ -8,7 +8,7 @@ output: pdf_document
 
 Through out the workshop we will be using R and R Studio. This document walks the participants through the steps necessary to download and install required software.
 
-R is a free, open source statistical computing environment. It is very popular these days to conduct all sorts of data manipulation and analysis tasks. 
+R is a free, open source statistical computing environment. It is very popular these days to conduct all sorts of data wrangling and analysis tasks. 
 
 R studio is an integrated development environment that eases using R. We will be using it to (1) ease learning, (2) provide high quality reports.
 
