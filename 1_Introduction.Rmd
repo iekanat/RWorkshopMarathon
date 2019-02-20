@@ -2,7 +2,9 @@
 title: "Introduction"
 author: "Irfan Kanat"
 date: "October 11, 2015"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
 ---
 
 # How I Learned to Stop Worrying and Love the R Console
@@ -14,7 +16,7 @@ First of all, command driven interface is very flexible and it is better suited 
 Throughout this document you will see two types of code blocks. First group (exact representation may vary depending on media type) is blue text in light gray boxes. Those are R commands you can type in to the R console. Second group is the black text on white back ground, preceded by ##. Which is the R output of said command. Below is an example.
 
 ```{r}
-print("Hello MSBA Students")
+print("Hello OU Faculty")
 # This is a comment, any line starting with a # sign won't be evaluated by R.
 ```
 

@@ -12,7 +12,7 @@ In this document I will try to walk you through the most common data import func
 Through out this document you will see two types of code blocks. First group (exact representation may vary depending on media type) is blue text in light gray boxes. Those are R commands you can type in to the R console. Second group is the black text on white back ground, preceded by ##. Which is the R output of said command. Below is an example.
 
 ```{r}
-print("Hello MSBA Students")
+print("Hello OU Faculty")
 ```
 
 
@@ -64,14 +64,14 @@ To import this file type we need two additional steps, installing and loading pa
 ```{r}
 # Below is commented out, since I do not want R to install package every time you run this.
 # Uncomment the line the first time and run.
-#install.packages("xlsx") # Install the xlsx package that enables XLSX import function.
-library(xlsx) # Enable the package
+#install.packages("openxlsx") # Install the xlsx package that enables XLSX import function.
+library(openxlsx) # Enable the package
 ```
 
 Now let us read the xlsx file into R. Note that I had to specify which worksheet to import.
 
 ```{r}
-xlsx <- read.xlsx("country.xlsx", sheetIndex = 1) # Import the file
+xlsx <- read.xlsx("country.xlsx", sheet = 1) # Import the file
 xlsx # view contents
 ```
 
@@ -82,10 +82,10 @@ The package has other functionality that you can discover on your own.
 R can connect to a variety of databases. For this workshop we currently do not have access to a database to demonstrate this functionality. Below is an example for MySQL.
 
 ```{r, eval=FALSE}
-library(RMySQL) # Load the necessary package
-channel <- dbConnect(MySQL(), user = 'uname', password = 'pwd', 
-                     host = '127.0.01', dbname='exampledata') # Establish database connection
-sql <- dbGetQuery(channel, "SELECT * FROM table;") # Execute query over connection, save results  
+#library(RMySQL) # Load the necessary package
+#channel <- dbConnect(MySQL(), user = 'uname', password = 'pwd', 
+#                     host = '127.0.01', dbname='exampledata') # Establish database connection
+#sql <- dbGetQuery(channel, "SELECT * FROM table;") # Execute query over connection, save results  
 ```
 
 ## Other Statistical Packages

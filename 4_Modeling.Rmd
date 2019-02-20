@@ -105,7 +105,7 @@ qplot provides a convenient command for plotting. While qplot would address 90% 
 # Initialize the plot with variables of interest
 ggplot(mtcars, aes(factor(gear))) +  
 # Instruct ggplot to plot bars of width .3
-  geom_bar(stat = "bin", width=0.3) +
+  geom_bar(width=0.3) +
   ggtitle('GGPlot is Highly Customizable') +
   xlab('Forward Gears') +
   ylab('Nr of Cars') 

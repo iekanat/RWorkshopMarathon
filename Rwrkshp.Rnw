@@ -71,9 +71,9 @@ rm(list=ls()) # Clean the workspace
 
 \author[Irfan Kanat]{Irfan E Kanat}
 
-\institute[ASU]{Department of Information Systems\\ 
-W.P. Carey School of Business\\
-Arizona State University}
+\institute[OU]{Department of Analytics and Information Systems\\ 
+College of Business\\
+Ohio University}
 
 \titlegraphic{\vfill \hfill \hyperlink{license}{\includegraphics{figures/cc.png}}}
 
@@ -89,7 +89,7 @@ Arizona State University}
 \begin{frame}
 \frametitle{Who am I?}
 
-Irfan Kanat, PhD Candidate
+Irfan Kanat
 
 \vspace*{2em} R user since 2006
 
@@ -187,7 +187,7 @@ Yet it's core design is starting to show its age. There are certain down sides t
 \begin{frame}
 \frametitle{Best Part of R}
 
-\textbf{Packages} CRAN houses over 7K packages. Providing functionality way beyond what is available in commercial packages.
+\textbf{Packages} CRAN houses over 13K packages. Providing functionality way beyond what is available in commercial packages.
 
 \vspace*{1.5em}\textbf{Community} Millions of users mean, all your questions are either already answered or will be in hours.
 
@@ -377,7 +377,7 @@ for (i in 1:nrow(Countries)) {
 \frametitle{Functions}
 
 	<<echo=FALSE, results='hide'>>= 
-		admitData <- read.csv("http://www.ats.ucla.edu/stat/data/binary.csv")
+		admitData <- read.csv("https://stats.idre.ucla.edu/stat/data/binary.csv")
 		admitData$rank <- as.factor(admitData$rank)
 	@
 
@@ -396,9 +396,9 @@ HelloWorld<-function(x, y=1) {
 	}
 }
 
-HelloWorld('Online MSBA')
+HelloWorld('COB Faculty')
 
-HelloWorld('Online MSBA', 2)
+HelloWorld('COB Faculty', 2)
 @
 
 <<>>=
@@ -416,7 +416,7 @@ ls(pattern='*_0') # partial match on object search
 
 rm('svm_0') # Remove an object from the workspace
 
-#rm(list=ls(pattern=ls())) # This would remove everything if ran
+#rm(list=ls()) # This would remove everything if ran
 @
 
 

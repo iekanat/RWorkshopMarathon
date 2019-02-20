@@ -2,7 +2,9 @@
 title: "Pre-Workshop"
 author: "Irfan Kanat"
 date: "10/21/2015"
-output: pdf_document
+output:
+  html_document:
+    df_print: paged
 ---
 # Purpose
 
