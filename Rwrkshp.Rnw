@@ -73,8 +73,7 @@ rm(list=ls()) # Clean the workspace
 \author[Irfan Kanat]{Irfan E Kanat}
 
 \institute[CBS]{Department of Digitization\\ 
-College of Business\\
-Ohio University}
+Copenhagen Business School}
 
 \titlegraphic{\vfill \hfill \hyperlink{license}{\includegraphics{figures/cc.png}}}
 
