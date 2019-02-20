@@ -5,6 +5,7 @@ date: "October 11, 2015"
 output:
   html_document:
     df_print: paged
+  pdf_document: default
 ---
 
 # How I Learned to Stop Worrying and Love the R Console

@@ -5,6 +5,7 @@ date: "12/20/2015"
 output:
   html_document:
     df_print: paged
+  pdf_document: default
 ---
 
 We have already encountered packages quite a few times so far. In introduction we discussed the packages and the opportunities they provided. In importing we have used them to read in data in various formats. Yet, we have so far avoided a serious discussion of what packages are and how we can use them.

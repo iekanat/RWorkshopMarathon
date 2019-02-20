@@ -2,11 +2,13 @@
 title: "Sample Analysis and Visualizations"
 author: "Irfan Kanat"
 date: "12/20/2015"
-output: 
+output:
   pdf_document:
-    fig_width: 4
+    fig_caption: no
     fig_height: 3
-    fig_caption: false
+    fig_width: 4
+  html_document:
+    df_print: paged
 ---
 
 
@@ -97,38 +99,7 @@ qplot(hp, mpg, data=mtcars) +
 
 ## ggplot
 
-qplot provides a convenient command for plotting. While qplot would address 90% of your plotting needs. ggplot is way more than qplot, it is almost a different language just for plotting. The intricacies may be hard to learn and is clearly beyond the scope of this workshop. I am providing ggplot code below to achieve the same results as the qplot, so the attendees can get a sense of what ggplot is really about.
-
-### Histogram
-
-```{r}
-# Initialize the plot with variables of interest
-ggplot(mtcars, aes(factor(gear))) +  
-# Instruct ggplot to plot bars of width .3
-  geom_bar(width=0.3) +
-  ggtitle('GGPlot is Highly Customizable') +
-  xlab('Forward Gears') +
-  ylab('Nr of Cars') 
-```
-
-### Scatter Plot
-
-```{r}
-ggplot(mtcars, aes(x=hp, y=mpg)) +  
-  geom_point(aes(color=factor(cyl), size=disp)) + # For scatter plot
-	geom_smooth(method=lm) + # Add a regression line
-  ggtitle('GGPlot FTW!') # Add a title
-```
-
-### Bar Charts 
-
-You use bar charts when you want to visualize the relationship of a continuous variable over a categorical variable (eg. gender-height). Here I plot mean mpg over two categorical variables. 
-
-```{r}
-ggplot(mtcars,aes(x=factor(gear),y=mpg,fill=factor(vs)), color=factor(vs)) +  
-  stat_summary(fun.y=mean, position=position_dodge(), geom="bar") +
-  theme_classic() # BONUS: Nicer looking
-```
+qplot provides a convenient command for plotting. While qplot would address 90% of your plotting needs. ggplot is way more than qplot, it is almost a different language just for plotting. The intricacies may be hard to learn and is clearly beyond the scope of this workshop. If interested, you can refer to the full R workshop documentation on my github page.
 
 
 ## Statistical Models
