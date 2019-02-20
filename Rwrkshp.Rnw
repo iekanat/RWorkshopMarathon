@@ -58,6 +58,7 @@
 \makeatother
 
 \begin{document}
+
 <<setup, include=FALSE>>=
 library(knitr)
 library(ggplot2)
@@ -71,7 +72,7 @@ rm(list=ls()) # Clean the workspace
 
 \author[Irfan Kanat]{Irfan E Kanat}
 
-\institute[OU]{Department of Analytics and Information Systems\\ 
+\institute[CBS]{Department of Digitization\\ 
 College of Business\\
 Ohio University}
 
@@ -276,7 +277,7 @@ A <- 2
 
 A
 
-a # Case sensitive
+#a # Case sensitive
 
 'A' != 'a' # Explanation
 
@@ -639,7 +640,7 @@ xlsx <- read.xlsx("country.xlsx", sheetIndex = 1)
 
 \begin{columns}[c]
 	\begin{column}{.5\textwidth}
-		Currently over 7000 packages \vspace{1em}
+		Currently over 13000 packages \vspace{1em}
 
 		for
 		\begin{itemize}
