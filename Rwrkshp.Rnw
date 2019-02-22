@@ -59,6 +59,7 @@
 
 \begin{document}
 
+
 <<setup, include=FALSE>>=
 library(knitr)
 library(ggplot2)
@@ -1104,7 +1105,7 @@ summary(logit_2)
 <<logitplot2,fig.width=6,fig.height=4,out.width='.7\\linewidth', warnings=FALSE, tidy=FALSE>>=
 # VISUALIZE mpg - Transmission RELATION
 ggplot(mtcars, aes(x = mpg, y = am)) +  
-  	stat_smooth(method="glm", family="binomial", se=FALSE) #
+  	stat_smooth(method="glm", method.args = list(family="binomial"), se=FALSE) #
 @
 
 

@@ -1,0 +1,9 @@
+\beamer@sectionintoc {1}{Introduction}{2}{0}{1}
+\beamer@sectionintoc {2}{R Console}{11}{0}{2}
+\beamer@sectionintoc {3}{Importing Data}{35}{0}{3}
+\beamer@sectionintoc {4}{Packages}{43}{0}{4}
+\beamer@sectionintoc {5}{Sample Analysis and Visualizations}{53}{0}{5}
+\beamer@subsectionintoc {5}{1}{Descriptive Visualizations}{54}{0}{5}
+\beamer@subsectionintoc {5}{2}{Modeling}{63}{0}{5}
+\beamer@sectionintoc {6}{Reporting}{86}{0}{6}
+\beamer@sectionintoc {7}{Where to Go Next?}{92}{0}{7}

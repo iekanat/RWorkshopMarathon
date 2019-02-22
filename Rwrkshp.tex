@@ -111,6 +111,7 @@
 
 
 
+
 \title[R Workshop]{How I Learned to Stop Worrying and Love the R Console}
 \subtitle{Marathon Edition}
 
@@ -635,7 +636,7 @@ Vectorize your operations.
 ##         print(paste("Hello", x))
 ##     }
 ## }
-## <bytecode: 0xf197fe8>
+## <bytecode: 0xd2f97f0>
 \end{verbatim}
 \begin{alltt}
 \hlstd{ls}
@@ -672,7 +673,7 @@ Vectorize your operations.
 ##     }
 ##     else all.names
 ## }
-## <bytecode: 0x28ba5b8>
+## <bytecode: 0x2353e68>
 ## <environment: namespace:base>
 \end{verbatim}
 \end{kframe}
@@ -1547,7 +1548,7 @@ We will keep using motor trends data set.\vfill
 \begin{verbatim}
 ## Non-constant Variance Score Test 
 ## Variance formula: ~ fitted.values 
-## Chisquare = 3.744471    Df = 1     p = 0.05298249
+## Chisquare = 3.744471, Df = 1, p = 0.052982
 \end{verbatim}
 \end{kframe}
 \end{knitrout}
@@ -1720,11 +1721,9 @@ log \left(\frac{p}{1-p} \right) = \beta_0 + \beta_1 x_1 + \epsilon
 \begin{alltt}
 \hlcom{# VISUALIZE mpg - Transmission RELATION}
 \hlkwd{ggplot}\hlstd{(mtcars,} \hlkwd{aes}\hlstd{(}\hlkwc{x} \hlstd{= mpg,} \hlkwc{y} \hlstd{= am))} \hlopt{+}
-        \hlkwd{stat_smooth}\hlstd{(}\hlkwc{method}\hlstd{=}\hlstr{"glm"}\hlstd{,} \hlkwc{family}\hlstd{=}\hlstr{"binomial"}\hlstd{,} \hlkwc{se}\hlstd{=}\hlnum{FALSE}\hlstd{)} \hlcom{#}
+        \hlkwd{stat_smooth}\hlstd{(}\hlkwc{method}\hlstd{=}\hlstr{"glm"}\hlstd{,} \hlkwc{method.args} \hlstd{=} \hlkwd{list}\hlstd{(}\hlkwc{family}\hlstd{=}\hlstr{"binomial"}\hlstd{),} \hlkwc{se}\hlstd{=}\hlnum{FALSE}\hlstd{)} \hlcom{#}
 \end{alltt}
-
-
-{\ttfamily\noindent\color{warningcolor}{\#\# Warning: Ignoring unknown parameters: family}}\end{kframe}
+\end{kframe}
 
 {\centering \includegraphics[width=.7\linewidth]{figures/beamer-logitplot2-1} 
 
